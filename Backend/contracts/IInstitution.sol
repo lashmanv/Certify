@@ -36,35 +36,35 @@ interface IInstitution is ICourse{
     );
 
     function generateCertificate(
-        bytes32[] memory _certificateId,
-        string[] memory _certificateURL,
+        string[] memory _certificateId,
         string[] memory _candidateName,
         string[] memory _candidateNumber,
         address[] memory _candidateAddress,
         string[] memory _courseName,
-        uint[] memory _courseCode,
+        string[] memory _courseCode,
         uint[] memory _expirationDate
     ) external returns (bool);
 
-    function getCertificateDetails(bytes32 _certificateId) 
+    function getCertificateDetails(string memory _certificateId) 
     external 
     view 
     returns (
-        bytes32,
         string memory,
         string memory,
         string memory,
-        uint,
+        address,
+        string memory,
+        string memory,
         bool,
         uint
     );
 
-    function revokeCertificate(bytes32 _certificateId) external returns (bool);
+    function revokeCertificate(string memory _certificateId) external returns (bool);
 
-    function getCertificateURL(bytes32 _certificateId) external view returns (string memory);
+    // function getCertificateURL(bytes32 _certificateId) external view returns (string memory);
 
     function revokenInstitute() external returns(bool);
 
-    function getUserCertificates(address _user) external view returns(bytes32[] memory);
+    function getUserCertificates(address _user) external view returns(string[] memory);
 
 }

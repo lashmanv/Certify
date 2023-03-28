@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-import { Routes, Route } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import HeroSection from '.././HeroSection'; 
 
@@ -17,6 +18,7 @@ import {
   NavIcon,
   NavBtnLink, 
 } from './NavbarElements';
+
 import { FaBars } from 'react-icons/fa';
 import { IconContext } from 'react-icons/lib'; 
 
@@ -29,11 +31,13 @@ import Institution from "../../artifacts/contracts/Institution.sol/Institution.j
 
 export default function Navbar({toggle,callback,connected,contract}) {
 
-  const CertifyAddress = "0xbc2299cB31ebd6390827c87B0b0b8d724C9E1835"
-  const InstitutionAddress = "0xa66a02AF069d6FeA7C4Fd321801f727F90AedE36"
+  const CertifyAddress = "0x57C5C9156fa8770995316b1F9B89aE9fb9fdf215"
+  const InstitutionAddress = "0xc13FFC9bC07F427c370e4442cE4e8E87BcC38411"
 
 	const DoConnect = async (bool) => {
+
 		console.log('Connecting....');
+
 		try {
 			// Get network provider and web3 instance.	
 			let provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -49,23 +53,37 @@ export default function Navbar({toggle,callback,connected,contract}) {
       network = network.chainId;
       console.log(signerAddress[0],network);
 
-      if(network === 5) setAddrs(signerAddress[0].slice(0,10));
-			else {setAddrs(signerAddress[0].slice(0,10)); console.log("Invalid network : Change Metamask network to Ethereum Testnet");}
+      if(network === 5) 
+      {
+        setAddrs(signerAddress[0].slice(0,10));
 
-			// Get an instance of the contract sop we can call our contract functions
-			let contract1 = new ethers.Contract(CertifyAddress, Certify, signer);
-			let contract2 = new ethers.Contract(InstitutionAddress, Institution, signer);
+        // Get an instance of the contract sop we can call our contract functions
+        let contract1 = new ethers.Contract(CertifyAddress, Certify, signer);
+        let contract2 = new ethers.Contract(InstitutionAddress, Institution, signer);
 
-      if(bool) callback({provider, signerAddress, contract1, contract2, network});
+        if(bool) callback({provider, signer, signerAddress, CertifyAddress, InstitutionAddress, network});
 
-      else{provider=null;signerAddress=0;contract1= null;contract1= null;network=null; callback({provider, signerAddress, contract1, contract2, network});}
+        else{
+          provider=null;
+          signer=null;
+          signerAddress=0;
+          contract1= null;
+          contract2= null;
+          network=null; 
+          callback({provider, signer, signerAddress, CertifyAddress, InstitutionAddress, network});
+        }
+      }
+      else {
+        notify("Invalid network : Change Metamask network to Ethereum Testnet");
+        console.log("Invalid network : Change Metamask network to Ethereum Testnet");
+      }
       
 		} catch (error) {
 			// Catch any errors for any of the above operations.
+      notify(error.message);
 			console.error("Could not connect to wallet", error);
 		}
 	};
-
 
   const [addrs, setAddrs] = useState(null);
 
@@ -95,6 +113,17 @@ export default function Navbar({toggle,callback,connected,contract}) {
 
   });
   
+  const notify = (e) => toast(e, {
+    position: "top-right",
+    className: 'toast-notify',
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+  }); 
 
   // If not connected, display the connect button.
 	if(!connected) {
@@ -103,11 +132,23 @@ export default function Navbar({toggle,callback,connected,contract}) {
         <IconContext.Provider value={{ color: '#fff' }}>
           <Nav>
             <NavbarContainer>
+            <ToastContainer
+              position="top-right"
+              autoClose={10000}
+              hideProgressBar={false}
+              newestOnTop={true}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="black"
+            />
               <NavTo to="/home" >
-            <NavIcon src={icon} alt="icon" to="/home" onClick={toggleHome} />
-              <MobileIcon onClick={toggle}>
-                <FaBars />
-              </MobileIcon>
+              <NavIcon src={icon} alt="icon" to="/home" onClick={toggleHome} />
+                <MobileIcon onClick={toggle}>
+                  <FaBars />
+                </MobileIcon>
               </NavTo>
               <NavMenu>
                 {[
@@ -126,7 +167,7 @@ export default function Navbar({toggle,callback,connected,contract}) {
               <NavBtn>
                 <NavBtnLink onClick={() => {connect(); top();}}>Connect Wallet</NavBtnLink>
               </NavBtn>
-            </NavbarContainer>
+              </NavbarContainer>
           </Nav>
         </IconContext.Provider>
       </>

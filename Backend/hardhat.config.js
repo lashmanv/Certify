@@ -1,12 +1,11 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-ethers");
-require('hardhat-contract-sizer');
 require("@nomiclabs/hardhat-web3");
 require('dotenv').config({path:'C:/Users/User/Desktop/zusd/.env'});
 
-const GOERLI_URL = "https://eth-goerli.g.alchemy.com/v2/UaaYF43sj3JMJovB77fp8Zke3Dg0LUko";
-const PRIVATE_KEY = ['0c063eb37e4ae8e58266b00606de9c5fc0666c5c45e39fd4263825075dba3d26'];
+const GOERLI_URL = "https://eth-goerli.g.alchemy.com/v2/qKEiV0bYEBzSQmvLmpPRVXG8r6UfFGg1";
+const PRIVATE_KEY = ['c83d39e59498d44d16f0ef80f709790d027a43e66dc4abc087b717fd37a93dba'];
 
 task("hardhat", "Prints the list of accounts", async () => {
   const accounts = await ethers.getSigners();
@@ -83,7 +82,7 @@ module.exports = {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./client/src/artifacts"
+    artifacts: "./artifacts"
   },
   mocha: {
     timeout: 200000

@@ -23,7 +23,6 @@
     "ethereum-waffle": "^3.2.1",
     "ethers": "^5.7.2",
     "hardhat": "^2.6.4",
-    "hardhat-contract-sizer": "^2.7.0",
     "hardhat-deploy": "^0.7.0-beta.39"
   },
   "dependencies": {
@@ -54,7 +53,6 @@
     "ethers": "^5.7.2",
     "ganache-cli": "^6.12.2",
     "hardhat": "^2.13.0",
-    "hardhat-contract-sizer": "^2.7.0",
     "hardhat-deploy": "^0.7.0-beta.39",
     "hardhat-gas-reporter": "^1.0.4",
     "mocha": "^10.2.0",

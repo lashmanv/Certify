@@ -1,5 +1,4 @@
 import crypto from '../../images/crypto.png';
-import piggybankSvg from '../../images/piggybank.svg'; 
 import secureDataSvg from '../../images/secure_data.svg';
 
 export const homeObjeOne = {
@@ -29,7 +28,7 @@ export const homeObjeTwo = {
   description: 'We have you covered no matter where you are located. All you need is an internet connnection and a phone or computer.', 
   buttonLabel: 'Learn more', 
   imgStart: true, 
-  img: piggybankSvg, 
+  img: crypto, 
   alt: 'Piggybank', 
   dark: false, 
   primary: false, 

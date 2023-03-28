@@ -4,15 +4,9 @@ import {
   RegisterContainer,
   RegisterH1,
   RegisterWrapper,
-  RegisterCard,
-  RegisterIcon,
   ReloadIcon,
   RefreshIcon,
   RegisterH2,
-  RegisterC,
-  Register,
-  Register1,
-  RegisterMany,
   RegisterRow,
   Column1,
   TextWrapper,
@@ -24,88 +18,52 @@ import {
   ImgWrap,
   Img,
 } from './RegisterElements'
-import { Button,Button1 } from '../ButtonElements';
-
+import { Button1 } from '../ButtonElements';
+import RRMultiSelect from 'rr-multi-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import bar from '../../images/bar.gif';
-import final from "../../images/icon1.png";
+import final from "../../images/register.jpg";
 
 import refresh from '../../images/refresh.png';
 
-import Certify from "../../artifacts/contracts/Certify.sol/Certify.json";
-import Institution from "../../artifacts/contracts/Institution.sol/Institution.json";
-
 export default function Verif(props) {
-	const [event, setEvent] = useState("Register");
-	const [mint, setMint] = useState(true);
-	
-	const[loading, setLoading] = useState(true);
-	
-	const [totalSupply, setTotalSupply] = useState(null);
-	const [tokenids, settokenids] = useState([]);
-	const [tokenURIs, setTokenURIs] = useState([]);
 
-	const [success, setSuccess] = useState(true);
-	const [error, setError] = useState(true);
+	const [result, setResult] = useState(false);
+	const [date, setDate] = useState(false);
 
-	const [contract, setContract] = useState();
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 
-		
-	const CertifyAddress = "0xd022D6eaFad443E6A6f8E31Fa2dfd0F846799E61"
-	const InstitutionAddress = "0xa2d66997aa33FD2D0aA5f65D95160ddf971851a8"
+	function dated(value) {
 
-	let contract1;
-	let contract2;
+		const date = new Date(value * 1000);
+		const formattedDate = date.toISOString().slice(0, 10);
 
-	const fetchMyAPI = async () => {
-		try {
-			// Get network provider and web3 instance.	
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			await window.ethereum.request({method: "eth_requestAccounts"});
-			// Use web3 to get the user's accounts.
-			const signer = provider.getSigner();
-			// Get an instance of the contract sop we can call our contract functions
-			contract1 = new ethers.Contract(CertifyAddress, Certify, signer);
-			contract2 = new ethers.Contract(InstitutionAddress, Institution, signer);
-			setContract(contract2);
-
-		} catch (error) {
-			// Catch any errors for any of the above operations.
-			console.error("Could not connect to Nft contract.", error);
-		}
+		setDate(formattedDate);
 	}
 
-	const DoRegister = async (e) => {
-		console.log(event);
-		if(!props || !contract || props.network!== 5) return;
-		console.log("loading...");
-		console.log(e);
-		let id ;
-		if(e.length > 1) {id = [e];}
-		id = e;
-		try{
-			const transaction = await props.contract.RegisterNft(id);
-			await transaction.wait;
-			console.log(transaction);
-			contract.on("Transfer", (from, to, tokenId) => {
-				setMint("Token Id : "+ parseInt(tokenId)+" succesfully minted to "+to);
-				console.log(mint);
-			});
-      	} 
-		catch (error) {
-			if((error?.data?.message.includes("user rejected transaction") || error?.message.includes("user rejected transaction")));
-				setError(error);
-				notify("User rejected transaction");
-				console.log(error);
-      	}
-	};
-
+	const options = [
+		"CSE",
+		"ECE",
+		"EEE",
+		"ME",
+		"IT",
+		"EIE",
+		"CE",
+		"RA",
+		"AE"
+	  ];
+	  
+	  
+	const [value,setValue] = useState([]);
 	
-
-	const closeLoaderIn5Seconds = () => {
-	  setTimeout(() => setLoading(false), 10000);
-  	};
+	function clearForm() {
+		// Get the form element
+		var form = document.getElementById("myForm");
+		// Reset the form
+		form.reset();
+	  }
 
 	useEffect(() => {
 		setTimeout(() => setError(false), 5000);
@@ -125,10 +83,6 @@ export default function Verif(props) {
 	// Handle contract unavailable. 
 	// This is an extra precaution since the user shouldn't be able to get to this page without connecting.
 	//if(!props.contract) return (<div className="page error">Contract Not Available</div>);
-
-	// Get all token IDs associated with the wallet address when the component mounts.
-	if(!totalSupply) fetchMyAPI();
-
 
 	const notify = (e) => toast(e, {
 		position: "top-right",
@@ -151,11 +105,12 @@ export default function Verif(props) {
 				<RegisterRow >
 					<Column1>
 					<TextWrapper>
-						<TopLine>Register certificates</TopLine>
+						<TopLine>Register your Institution</TopLine>
 						<Heading lightText={false}>Welcome to Certify!</Heading>
 						<Subtitle darkText={true}>
 						With our easy-to-use tool, you can Register any certificates.
-						Simply choose from our templates, customize with your details, and upload your certificate in blockchain.</Subtitle>
+						Simply choose from our templates, customize with your details, and upload your certificate in blockchain.
+						</Subtitle>
 						<BtnWrap>
 						<Button1 >
 						Click on Connect Wallet
@@ -174,13 +129,57 @@ export default function Verif(props) {
 		</>
 		);
 	}
-	if(!tokenURIs){return(<RegisterH1>Loading...</RegisterH1>)}
+
 	return (
 		<>
 		<RegisterContainer id="Register">
-			<RegisterH1>Register Certificates<RefreshIcon src={refresh} alt={"refresh"} onClick={() => {setLoading(true); closeLoaderIn5Seconds(); }}/> </RegisterH1>
+		<RegisterWrapper>
+			<RegisterRow >
+			<Column1>
+			<TextWrapper>
+				<TopLine>Move to decentralization</TopLine>
+				<Heading lightText={false}>Welcome to Certify!</Heading>
+				<RegisterH1>Register your Institution<RefreshIcon src={refresh} alt={"refresh"} onClick={() => {clearForm()}}/> </RegisterH1>
+
+					<ToastContainer
+						position="top-right"
+						autoClose={10000}
+						hideProgressBar={false}
+						newestOnTop={true}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="black"
+					/>
+
+			</TextWrapper>
+
+			{result ? (
+
+			<>
+			<br></br>
 			
-			{loading ? <ReloadIcon src={bar} alt={'progrss'}/> : <RegisterH2></RegisterH2>}
+			<div style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '10px' }}>
+			<h2 style={{ fontSize: '1.5em', color: '#333', marginBottom: '10px' }}>Certificate Details</h2>
+			<div style={{ display: 'flex', flexDirection: 'column' }}>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Cerificate Id     : {result[0]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Candidate Name    : {result[1]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Candidate Number  : {result[2]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Candidate Address : {result[3]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Course Code       : {result[4]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Course Id         : {result[5]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Isrevoked         : {result[6]}</p>
+				<p style={{ fontSize: '1.2em', margin: '5px 0' }}>Expiration Date   : {date}</p>
+			</div>
+			</div>
+
+
+			</> ) :
+			
+			(<>
+
 			<ToastContainer
 				position="top-right"
 				autoClose={10000}
@@ -193,6 +192,39 @@ export default function Verif(props) {
 				pauseOnHover
 				theme="black"
 			/>
+			<>
+			<form id="myForm" method="POST" action="https://script.google.com/macros/s/AKfycbxO3tgtE7f5a-CGsHqk4-cfWq_q9f2ZuUK8Q2D9n5MRoDKCBB6WlzE3MI-IrWCMU1-m/exec">
+				<div className="form-column">
+					
+					<input name="ownerAddress" type="text" placeholder="0xAbcd" required />
+					<input name="instituteCode" type="number" placeholder="1001" required />
+					<input name="instituteName" type="text" placeholder="A B C Insitute" required />
+					<input name="instituteAcronym" type="text" placeholder="ABC" required />
+					<RRMultiSelect
+						name="instituteCourses" 
+						options={options}
+						value={value}
+						onChange={setValue}
+					/>			
+
+					<button className="button" type="submit">Submit</button>
+				</div>
+			</form>
+				
+			<br></br>
+
+			</></>
+			)}
+		</Column1>
+
+		<Column2>
+		<ImgWrap>
+			<Img src={final} alt="nfts" />
+		</ImgWrap>
+		</Column2>
+
+		</RegisterRow>
+		</RegisterWrapper>
 		</RegisterContainer>	
 		</>
 	);

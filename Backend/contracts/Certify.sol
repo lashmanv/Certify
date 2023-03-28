@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.10;
-
+// [[1,"CSE"],[2,"ECE"],[3,"EEE"],[4,"ME"],[5,"IT"],[6,"EIE"],[7,"RA"],[8,"CE"]]
 import "./ICertify.sol";
 import "./Institution.sol";
 import "./IInstitution.sol";

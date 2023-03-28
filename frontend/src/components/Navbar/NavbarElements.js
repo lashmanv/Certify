@@ -49,6 +49,10 @@ export const NavIcon = styled.img`
   width: auto;
   height: 150px;
   margin-top: -40px;
+
+  @media screen and (max-width: 768px) {
+     
+  }
 `;
 
 export const MobileIcon = styled.div`
@@ -74,11 +78,15 @@ export const NavMenu = styled.ul`
 
   @media screen and (max-width: 768px) {
     display: none; 
-  }
+  } 
 `;
 
 export const NavItem = styled.li`
   height: 80px; 
+  &:active {
+    margin-top:10px;
+    border-bottom: 3px solid #fff;
+  }
 `;
 
 export const NavLinks = styled(RouterLink)`
@@ -90,8 +98,8 @@ export const NavLinks = styled(RouterLink)`
   height: 100%;
   cursor: pointer; 
 
-  &.active {
-    border-bottom: 3px solid #01bf71;
+  &:hover, &:active {
+    color: green;
   }
 `;
 

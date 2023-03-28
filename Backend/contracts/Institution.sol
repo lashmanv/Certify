@@ -20,24 +20,24 @@ contract Institution is IInstitution{
     Course[] instituteCourses;
 
     struct Certificate {
-        bytes32 certificateId;
-        string certificateURL;
+        string certificateId;
         string candidateName;
         string candidateNumber;
+        address candidateAddress;
         string courseName;
-        uint courseId;
+        string courseId;
         bool isRevoked;
         uint expirationDate;
     }
 
-    mapping(bytes32 => Certificate) public certificateDetails;
+    mapping(string => Certificate) public certificateDetails;
 
     // Mapping owner address to certificate Id
-    mapping(address => bytes32[]) internal userCertificateIds;
+    mapping(address => string[]) internal userCertificateIds;
 
-    event logCertificateGenerated(bytes32 _certificateId);
+    event logCertificateGenerated(string _certificateId);
 
-    event logCertificateRevoked(bytes32 _revoked);
+    event logCertificateRevoked(string _revoked);
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Caller is not the admin");
@@ -107,13 +107,12 @@ contract Institution is IInstitution{
     }
 
     function generateCertificate(
-        bytes32[] memory _certificateId,
-        string[] memory _certificateURL,
+        string[] memory _certificateId,
         string[] memory _candidateName,
         string[] memory _candidateNumber,
         address[] memory _candidateAddress,
         string[] memory _courseName,
-        uint[] memory _courseId,
+        string[] memory _courseId,
         uint[] memory _expirationDate
     ) external onlyOwner() override returns(bool) {
         
@@ -121,7 +120,7 @@ contract Institution is IInstitution{
             require(certificateDetails[_certificateId[i]].expirationDate == 0, "Certificate with given id already exists");
             require(_expirationDate[i] > block.timestamp, "Expiration date should be more than the current date");
 
-            certificateDetails[_certificateId[i]] = Certificate(_certificateId[i], _certificateURL[i], _candidateName[i], _candidateNumber[i], _courseName[i], _courseId[i], false, _expirationDate[i]);
+            certificateDetails[_certificateId[i]] = Certificate(_certificateId[i], _candidateName[i], _candidateNumber[i], _candidateAddress[i], _courseName[i], _courseId[i], false, _expirationDate[i]);
 
             userCertificateIds[_candidateAddress[i]].push(_certificateId[i]);
 
@@ -131,14 +130,14 @@ contract Institution is IInstitution{
         return true;
     }
 
-    function getCertificateDetails(bytes32 _certificateId) public override view returns(bytes32, string memory, string memory, string memory, uint, bool, uint) {
+    function getCertificateDetails(string memory _certificateId) public override view returns(string memory, string memory, string memory, address, string memory, string memory, bool, uint) {
         Certificate memory temp = certificateDetails[_certificateId];
         require(temp.expirationDate != 0, "No data exists");
 
-        return (temp.certificateId, temp.certificateURL, temp.candidateName, temp.courseName, temp.courseId, temp.isRevoked, temp.expirationDate);
+        return (temp.certificateId, temp.candidateName, temp.candidateNumber, temp.candidateAddress , temp.courseName, temp.courseId, temp.isRevoked, temp.expirationDate);
     }
 
-    function revokeCertificate(bytes32 _certificateId) external onlyOwner() override returns(bool){
+    function revokeCertificate(string memory _certificateId) external onlyOwner() override returns(bool){
         
         require(
             certificateDetails[_certificateId].expirationDate >= block.timestamp,
@@ -152,16 +151,16 @@ contract Institution is IInstitution{
         return true;
     }
 
-    function getCertificateURL(bytes32 _certificateId) external view override returns (string memory) {
-        string memory url = certificateDetails[_certificateId].certificateURL;
+    // function getCertificateURL(bytes32 _certificateId) external view override returns (string memory) {
+    //     string memory url = certificateDetails[_certificateId].certificateURL;
 
-        require(bytes(url).length != 0, "Certificate id does not exist");
+    //     require(bytes(url).length != 0, "Certificate id does not exist");
 
-        return url;
-    }
+    //     return url;
+    // }
 
-    function getUserCertificates(address _user) external view override returns(bytes32[] memory) {
-        bytes32[] memory url = userCertificateIds[_user];
+    function getUserCertificates(address _user) external view override returns(string[] memory) {
+        string[] memory url = userCertificateIds[_user];
 
         require(url.length != 0, "User don't have any certificates");
 

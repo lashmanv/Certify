@@ -12007,6 +12007,11 @@ rollup@^2.43.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
+rr-multi-select@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/rr-multi-select/-/rr-multi-select-1.0.7.tgz#5b5d1918d2a5daf3ee8adf3e969d308911c0f2b2"
+  integrity sha512-Ifwha3j8+LI/6XEY04Ui+iol/yDnU+p4umcxGHzFB/0d894s5DLC6LhnXHvp7IAm/+nxXHKe5eIw3v1UTHsYQA==
+
 rsa-pem-to-jwk@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/rsa-pem-to-jwk/-/rsa-pem-to-jwk-1.1.3.tgz#245e76bdb7e7234cfee7ca032d31b54c38fab98e"

@@ -37,13 +37,8 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32[]",
-          "name": "_certificateId",
-          "type": "bytes32[]"
-        },
-        {
           "internalType": "string[]",
-          "name": "_certificateURL",
+          "name": "_certificateId",
           "type": "string[]"
         },
         {
@@ -67,9 +62,9 @@
           "type": "string[]"
         },
         {
-          "internalType": "uint256[]",
+          "internalType": "string[]",
           "name": "_courseCode",
-          "type": "uint256[]"
+          "type": "string[]"
         },
         {
           "internalType": "uint256[]",
@@ -91,19 +86,14 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "string",
           "name": "_certificateId",
-          "type": "bytes32"
+          "type": "string"
         }
       ],
       "name": "getCertificateDetails",
       "outputs": [
         {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        },
-        {
           "internalType": "string",
           "name": "",
           "type": "string"
@@ -119,9 +109,19 @@
           "type": "string"
         },
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
         },
         {
           "internalType": "bool",
@@ -132,25 +132,6 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "_certificateId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "getCertificateURL",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
         }
       ],
       "stateMutability": "view",
@@ -264,9 +245,9 @@
       "name": "getUserCertificates",
       "outputs": [
         {
-          "internalType": "bytes32[]",
+          "internalType": "string[]",
           "name": "",
-          "type": "bytes32[]"
+          "type": "string[]"
         }
       ],
       "stateMutability": "view",
@@ -275,9 +256,9 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
+          "internalType": "string",
           "name": "_certificateId",
-          "type": "bytes32"
+          "type": "string"
         }
       ],
       "name": "revokeCertificate",

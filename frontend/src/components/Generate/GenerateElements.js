@@ -3,15 +3,7 @@ import styled from 'styled-components';
 export const InfoContainer = styled.div`
   color: #fff;
   background: '#fff';
-  margin-bottom: ${({ primary }) => primary ? `100px` : `0px`}; 
-
-  @media screen and (max-width: 768px) {
-    padding: 100px 0;
-  }
-`;
-
-export const Top = styled.div`
-  margin-left: 500px;
+  margin-bottom: 0px; 
 
   @media screen and (max-width: 768px) {
     padding: 100px 0;
@@ -19,26 +11,30 @@ export const Top = styled.div`
 `;
 
 export const InfoWrapper = styled.div`
-  display: flex; 
-  height: ${({ primary }) => primary ? `auto` : `800px`};  
+  height: 850px;  
   width: 100%;
   max-width: 1100px; 
   margin-right: auto;
   margin-left: auto; 
-  margin-top: 50px; 
+  margin-top: 0px;
   padding: 0 24px;
-  justify-content: flex; 
+
+  display: flex;
+  justify-content: center;
 `;
 
-export const InfoWrapper1 = styled.div`
-
+export const ReloadIcon = styled.img`
+  height: 250px;
+  width: 250px;
+  margin-top:-75px;
+  margin-bottom:-50px;
 `;
 
 export const InfoRow = styled.div`
   display: grid; 
-  justify-content: flex-start; 
+  justify-content: center;
   grid-auto-columns: minmax(auto, 1lf);
-  align-items:  ${({ primary }) => primary ? `0px` : `center`}; 
+  align-items: center; 
   grid-template-areas: ${({ imgStart }) => imgStart ? `'col2 col1'` : `'col1 col2'`};
 
   @media screen and (max-width: 768px) {
@@ -46,36 +42,27 @@ export const InfoRow = styled.div`
   }
 `;
 
-export const InfoRow1 = styled.div`
-  display: grid; 
-  justify-content: flex-start; 
-  grid-auto-columns: minmax(auto, 1lf);
-  align-items:  ${({ primary }) => primary ? `0px` : `center`}; 
-  grid-template-areas: ${({ imgStart }) => imgStart ? `'col2 col1'` : `'col1 col2'`};
-
-  @media screen and (max-width: 768px) {
-    grid-template-areas: ${({ imgStart} ) => imgStart ? `'col2' 'col1'` : `'col1 col1' 'col2 col2'`};   
-  }
-`;
 
 export const Column1 = styled.div`
-  margin-top:  ${({ primary }) => primary ? `0px` : `0px`};
-  margin-bottom:  ${({ primary }) => primary ? `0px` : `15px`};
-  margin-left:  ${({ primary }) => primary ? `100px` : `0px`};
-  margin-right:  ${({ primary }) => primary ? `0px` : `0px`};
+  margin-top: 0px;
+  margin-bottom: 15px;
+  margin-left: 0px;
+  margin-right: 0px;
   padding: 0 15px;
   grid-area: col1;
 
+  justify-content: center;
+
   @media screen and (max-width: 768px) {
     margin: 0px;  
-    margin-top: -50px; 
+    margin-top: 10px; 
   }
 `;
 
 export const Column2 = styled.div`
-  margin-bottom: ${({ primary }) => primary ? `0px` : `15px`};
-  margin-left: ${({ primary }) => primary ? `0px` : `0px`};
-  margin-right: ${({ primary }) => primary ? `550px` : `0px`};
+  margin-bottom:15px;
+  margin-left:0px;
+  margin-right: 0px;
   grid-area: col2;
 
   @media screen and (max-width: 768px) {
@@ -84,28 +71,9 @@ export const Column2 = styled.div`
     margin-left: 50px;
     align-items: center; 
 
-    margin:  ${({ primary }) => primary ? `0px` : `0px`};
-    margin-top: ${({ primary }) => primary ? `0px` : `-200px`};
-    margin-left: ${({ primary }) => primary ? `0px` : `-45px`};
-
-  }
-`;
-
-export const Column3 = styled.div`
-  margin-bottom: 15px;
-  margin-top: -10px;
-  margin-left: 300px;
-  grid-area: col2;
-
-  @media screen and (max-width: 768px) {
-    margin: 0px;   
-    margin-top: -250px;
-    margin-left: 50px;
-    align-items: center; 
-
-    margin:  ${({ primary }) => primary ? `0px` : `0px`};
-    margin-top: ${({ primary }) => primary ? `0px` : `-200px`};
-    margin-left: ${({ primary }) => primary ? `0px` : `-45px`};
+    margin: 0px;
+    margin-top:0px;
+    margin-left:-45px;
 
   }
 `;
@@ -127,18 +95,21 @@ export const TopLine = styled.div`
   font-weight: 700;
   letter-spacing: 1.4px;
   text-transform: uppercase; 
-  margin-top: ${({ primary }) => primary ? `150px` : `16px`};
-  margin-bottom: ${({ primary }) => primary ? `15px` : `16px`};
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  display: grid; 
+  justify-content: center;
 
   @media screen and (max-width: 768px) {
-    font-size: ${({ primary }) => primary ? `14px` : `16px`};
-    margin: ${({ primary }) => primary ? `0px` : `10px`};
+    font-size: 16px;
+
   }
 `;
 
 export const Heading = styled.h1`
-  margin-top: ${({ primary }) => primary ? `20px` : `16px`};
-  margin-bottom: ${({ primary }) => primary ? `20px` : `24px`};
+  margin-top: 16px;
+  margin-bottom: 24px;
   font-size: 48px;
   line-height: 1.1;
   font-weight: 600;
@@ -146,13 +117,13 @@ export const Heading = styled.h1`
 
   @media screen and (max-width: 768px) {
     font-size: 32px; 
-    margin-bottom: ${({ primary }) => primary ? `10px` : `16px`};
+    margin-bottom: 16px;
   }
 `;
 
 export const Subtitle = styled.p`
   max-width: 440px;
-  margin-bottom: ${({ primary }) => primary ? `10px` : `35px`};
+  margin-bottom: 35px;
   font-size: 18px;
   line-height: 24px;
   color: ${({ darkText }) => darkText ? '#010606' : '#fff'};
@@ -160,7 +131,7 @@ export const Subtitle = styled.p`
   @media screen and (max-width: 768px) {
     align-content: center; 
     font-size: 16px; 
-    margin-bottom: ${({ primary }) => primary ? `0px` : `35px`};
+    margin-bottom:35px;
 
   }
 `;
@@ -181,4 +152,10 @@ export const ImgWrap = styled.div`
 
 export const Img = styled.img`
   width: 100%;
+
+  @media screen and (max-width: 768px) {
+    width: 300px;
+    margin-left:135px;
+    margin-top:50px;
+  }
 `;

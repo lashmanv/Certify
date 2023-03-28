@@ -4,108 +4,172 @@ import {
   VerifyContainer,
   VerifyH1,
   VerifyWrapper,
-  VerifyCard,
-  VerifyIcon,
   ReloadIcon,
   RefreshIcon,
   VerifyH2,
-  VerifyC,
-  Verify,
-  Verify1,
-  VerifyMany,
   VerifyRow,
   Column1,
+  Column3,
   TextWrapper,
   TopLine,
   Heading,
   Subtitle,
   BtnWrap,
+  Column4,
   Column2,
   ImgWrap,
   Img,
+  ImgWrap1,
+  Img1
 } from './VerifyElements'
-import { Button,Button1 } from '../ButtonElements';
+import { Button1 } from '../ButtonElements';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import bar from '../../images/bar.gif';
-import final from "../../images/icon1.png";
+import final from "../../images/verify.jpg";
 
 import refresh from '../../images/refresh.png';
 
-import Certify from "../../artifacts/contracts/Certify.sol/Certify.json";
 import Institution from "../../artifacts/contracts/Institution.sol/Institution.json";
 
 export default function Verif(props) {
-	const [event, setEvent] = useState("Verify");
-	const [mint, setMint] = useState(true);
+
+	const InstitutionAddress = "0xc13FFC9bC07F427c370e4442cE4e8E87BcC38411"
+
+	const [Id, setId] = useState('');
+
+	const [result, setResult] = useState([
+		// {CerificateId: '', CandidateName: '', CandidateNumber: '', CandidateAddress: '', CourseCode: '', CourseId: '', Isrevoked: '', ExpirationDate: ''}
+	]);	  
 	
-	const[loading, setLoading] = useState(true);
-	
-	const [totalSupply, setTotalSupply] = useState(null);
-	const [tokenids, settokenids] = useState([]);
-	const [tokenURIs, setTokenURIs] = useState([]);
+	const[loading, setLoading] = useState(false);
 
-	const [success, setSuccess] = useState(true);
-	const [error, setError] = useState(true);
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 
-	const [contract, setContract] = useState();
-
+	const DoVerify = async (e,val) => {
 		
-	const CertifyAddress = "0xd022D6eaFad443E6A6f8E31Fa2dfd0F846799E61"
-	const InstitutionAddress = "0xa2d66997aa33FD2D0aA5f65D95160ddf971851a8"
+		console.log(val);
+		try{
+			setLoading(true);
+			console.log(val.length)
+			if(val.length == 42) {
+				let ids = await DoVerifyUser(val);
+				let res = [];
 
-	let contract1;
-	let contract2;
+				let i;
+				for(i = 0; i < ids.length; i++) {
+					res.push(await DoVerifyCerti(ids[i]));
+				}
 
-	const fetchMyAPI = async () => {
-		try {
-			// Get network provider and web3 instance.	
-			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			await window.ethereum.request({method: "eth_requestAccounts"});
-			// Use web3 to get the user's accounts.
-			const signer = provider.getSigner();
-			// Get an instance of the contract sop we can call our contract functions
-			contract1 = new ethers.Contract(CertifyAddress, Certify, signer);
-			contract2 = new ethers.Contract(InstitutionAddress, Institution, signer);
-			setContract(contract2);
+				console.log(res)
 
-		} catch (error) {
-			// Catch any errors for any of the above operations.
-			console.error("Could not connect to Nft contract.", error);
+				setResult(res);
+
+				setLoading(false);
+			}
+			else {
+				let res = [];
+
+				res.push(await DoVerifyCerti(val));
+				
+				console.log(res)
+
+				setResult(res);
+
+				setLoading(false);
+      		} 
+
 		}
+		catch (error) {
+			notify(error.reason.slice(0, 41));
+			console.log(error);
+
+			setLoading(false);
+      	}
 	}
 
-	const DoVerify = async (e) => {
-		console.log(event);
-		if(!props || !contract || props.network!== 5) return;
-		console.log("loading...");
-		console.log(e);
-		let id ;
-		if(e.length > 1) {id = [e];}
-		id = e;
+	const DoVerifyCerti = async (val) => {
+
+		// if(!props.InstitutionAddress || props.network!==5) return;
+
 		try{
-			const transaction = await props.contract.VerifyNft(id);
-			await transaction.wait;
-			console.log(transaction);
-			contract.on("Transfer", (from, to, tokenId) => {
-				setMint("Token Id : "+ parseInt(tokenId)+" succesfully minted to "+to);
-				console.log(mint);
-			});
+			setLoading(true);
+			let contract = new ethers.Contract(InstitutionAddress, Institution, props.signer);
+
+			let transaction = await contract.getCertificateDetails(val);
+
+			transaction = transaction.slice();
+
+			transaction[6] == false ? transaction[6] = 'No' : transaction[6] = 'Yes';
+
+			const newObject = { 
+				CerificateId: transaction[0], 
+				CandidateName: transaction[1], 
+				CandidateNumber: transaction[2], 
+				CandidateAddress: transaction[3], 
+				CourseCode: transaction[4], 
+				CourseId: transaction[5], 
+				Isrevoked: transaction[6], 
+				ExpirationDate: dated(parseInt(transaction[7]._hex))
+			};
+
+			// console.log(newObject);
+
+			return newObject;
       	} 
 		catch (error) {
-			if((error?.data?.message.includes("user rejected transaction") || error?.message.includes("user rejected transaction")));
+			if(error && error?.message.includes("user rejected transaction")) {
 				setError(error);
 				notify("User rejected transaction");
+				setLoading(false);
+			}
+			else{
+				notify(error.reason);
 				console.log(error);
+
+				setLoading(false);
+			}
       	}
 	};
 
-	
+	const DoVerifyUser = async (val) => {
 
-	const closeLoaderIn5Seconds = () => {
-	  setTimeout(() => setLoading(false), 10000);
-  	};
+		// if(!props.InstitutionAddress || props.network!==5) return;
+
+		try{
+			setLoading(true);
+			let contract = new ethers.Contract(InstitutionAddress, Institution, props.signer);
+
+			let transaction = await contract.getUserCertificates(val);
+
+			// console.log(transaction);
+
+			return transaction;
+      	} 
+		catch (error) {
+			if(error && error?.message.includes("user rejected transaction")) {
+				setError(error);
+				notify("User rejected transaction");
+				setLoading(false);
+			}
+			else{
+				notify(error.reason);
+				console.log(error);
+
+				setLoading(false);
+			}
+      	}
+	};
+
+	function dated(value) {
+
+		const date = new Date(value * 1000);
+		const formattedDate = date.toISOString().slice(0, 10);
+
+		return formattedDate;
+	}
 
 	useEffect(() => {
 		setTimeout(() => setError(false), 5000);
@@ -125,10 +189,6 @@ export default function Verif(props) {
 	// Handle contract unavailable. 
 	// This is an extra precaution since the user shouldn't be able to get to this page without connecting.
 	//if(!props.contract) return (<div className="page error">Contract Not Available</div>);
-
-	// Get all token IDs associated with the wallet address when the component mounts.
-	if(!totalSupply) fetchMyAPI();
-
 
 	const notify = (e) => toast(e, {
 		position: "top-right",
@@ -155,7 +215,8 @@ export default function Verif(props) {
 						<Heading lightText={false}>Welcome to Certify!</Heading>
 						<Subtitle darkText={true}>
 						With our easy-to-use tool, you can verify any certificates.
-						Simply choose from our templates, customize with your details, and upload your certificate in blockchain.</Subtitle>
+						Simply choose from our templates, customize with your details, and upload your certificate in blockchain.
+						</Subtitle>
 						<BtnWrap>
 						<Button1 >
 						Click on Connect Wallet
@@ -174,13 +235,66 @@ export default function Verif(props) {
 		</>
 		);
 	}
-	if(!tokenURIs){return(<VerifyH1>Loading...</VerifyH1>)}
+
 	return (
 		<>
 		<VerifyContainer id="verify">
-			<VerifyH1>Verify Certificates<RefreshIcon src={refresh} alt={"refresh"} onClick={() => {setLoading(true); closeLoaderIn5Seconds(); }}/> </VerifyH1>
+			<VerifyWrapper>
+			<VerifyRow >
+			<Column1>
+			<TextWrapper>
+				<TopLine>Move to decentralization</TopLine>
+				<Heading lightText={false}>Welcome to Certify!</Heading>
+				<VerifyH1>Verify Certificates<RefreshIcon src={refresh} alt={"refresh"} onClick={() => {setResult([])}}/> </VerifyH1>
+
+					{loading ? <><div className="loader" /></> : <></>}
+
+					<ToastContainer
+						position="top-right"
+						autoClose={10000}
+						hideProgressBar={false}
+						newestOnTop={true}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="black"
+					/>
+
+			</TextWrapper>
+				
+			{result.length > 0 ? (
+
+			<>
+			<br></br>
+	
+			{result.map((item, index) => (
+				<div key = {index}>
+				<div style={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '10px' }}>
+				<h2 style={{ fontSize: '1.5em', color: '#333', marginBottom: '10px'}}>Certificate {index+1} Details</h2>
+				<div style={{ display: 'flex', flexDirection: 'column' }}>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Cerificate Id: {item.CerificateId}</p>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Candidate Name: {item.CandidateName}</p>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Candidate Number: {item.CandidateNumber}</p>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Candidate Address: {item.CandidateAddress}</p>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Course Code: {item.CourseCode}</p>
+					<p style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Course Id: {item.CourseId}</p>
+					<p  style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Isrevoked: {item.Isrevoked}</p>
+					<p style={{ fontSize: '1.2em', color: '#333', margin: '5px 0' }}>Expiration Date: {item.ExpirationDate}</p>
+				</div>
+				</div>
+				<br></br>
+				</div>
+				
+			))}
 			
+			</> ) :
+			
+			(<>
+
 			{loading ? <ReloadIcon src={bar} alt={'progrss'}/> : <VerifyH2></VerifyH2>}
+
 			<ToastContainer
 				position="top-right"
 				autoClose={10000}
@@ -193,6 +307,26 @@ export default function Verif(props) {
 				pauseOnHover
 				theme="black"
 			/>
+			<form className="form">
+				<div className="form-column">
+					<label htmlFor="field1">User Address / Certificate Id</label>
+					<input type="text" id="field1" value={Id} placeholder="0xB8A88... / QmP8r4Not..." onChange={(e)=> setId(e.target.value)} />
+				</div>
+				<br></br>
+
+			</form>
+			<div className="button1" onClick={(event) => { DoVerify(event,Id); } }> Get Certificate Details </div>
+			</> )}
+			</Column1>
+
+			<Column2>
+			<ImgWrap>
+				<Img src={final} alt="nfts" />
+			</ImgWrap>
+			</Column2>
+			
+			</VerifyRow>
+			</VerifyWrapper>
 		</VerifyContainer>	
 		</>
 	);

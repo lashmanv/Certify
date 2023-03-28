@@ -1,70 +1,26 @@
 import styled from 'styled-components'; 
 
 export const VerifyContainer = styled.div`
-  height: auto;
-  min-height: 100% !important;
-  margin-top: -50px;
-  padding:100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
-  background: white;
+  color: #fff;
+  background: '#fff';
+  margin-bottom: 0px; 
 
   @media screen and (max-width: 768px) {
-    height: fit-content;
-  }
-
-  @media screen and (max-width: 480px) {
-    height: fit-content; 
+    padding: 100px 0;
   }
 `;
 
+export const VerifyWrapper = styled.div`
+  height: 850px;  
+  width: 100%;
+  max-width: 1100px; 
+  margin-right: auto;
+  margin-left: auto; 
+  margin-top: 0px;
+  padding: 0 24px;
 
-
-export const VerifyCard = styled.div`
-  background: #fff;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start; 
-  align-items: center;
-  border-radius: 40px; 
-  width: fit-content;
-  margin-top:10px;
-  height: fit-content;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  transition: all .2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.02);
-    transition: all .2s ease-in-out;
-    cursor: pointer;
-  }
-`;
-
-export const VerifyC = styled.div`
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; 
-  align-items: center;
-  border-radius: 40px; 
-  margin-top: 20px;
-  width: 300px;
-  height: 150px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  transition: all .2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.02);
-    transition: all .2s ease-in-out;
-    cursor: pointer;
-  }
-`;
-
-export const VerifyIcon = styled.img`
-  height: 250px;
-  width: 250px;
+  justify-content: center;
 `;
 
 export const ReloadIcon = styled.img`
@@ -75,7 +31,8 @@ export const ReloadIcon = styled.img`
 `;
 
 export const RefreshIcon = styled.img`
-  margin: 18px;
+  margin-left: 18px;
+  margin-top: 10px;
   height: 25px;
   width: 25px;
 
@@ -84,18 +41,24 @@ export const RefreshIcon = styled.img`
     transition: all .2s ease-in-out;
     cursor: pointer;
   }
+
+  
+  @media screen and (max-width: 768px) {
+    margin-left: 8px;
+    margin-top: 5px;
+  }
 `;
 
 export const VerifyH1 = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2.1rem;
   color: black;
-  margin-top: 75px;
+  margin-top: 0px;
   margin-bottom: 30px;
   display: flex;
   justify-content: center;
 
-  @media screen and (max-width: 480px) {
-    font-size: 2rem;
+  @media screen and (max-width: 768px) {
+    font-size: 1.5rem;
   }
 `;
 
@@ -105,85 +68,9 @@ export const VerifyH2 = styled.h2`
   margin-top: 20px;
 `;
 
-export const VerifyH3 = styled.h3`
-  color: black;
-  font-size: 1rem;
-  margin-top: 100px;
-  margin-bottom: -50px
-`;
-
-export const VerifyH4 = styled.h4`
-  color: black;
-  font-size: 1rem;
-  margin-bottom: 20px;
-  margin-top: 20px;
-`;
-
-export const Verify1 = styled.p`
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
-  background: green;
-  width: 100%;
-  height: 50px;
-  border-radius: 00px 00px 40px 40px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  transition: all .2s ease-in-out;
-  &:hover {
-    transform: scale(1.02);
-    transition: all .2s ease-in-out;
-    cursor: pointer;
-  }
-`;
-
-export const Verify = styled.p`
-  color: black;
-  width: 100%;
-  height: 50px;
-  border-radius: 00px 00px 40px 40px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  }
-`;
-
-
-export const VerifyMany = styled.p`
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
-  background: green;
-  width: 100px;
-  height: 50px;
-  margin-bottom: 20px;
-  border-radius: 40px ;
-  box-shadow: 0 1px 3px rgba(0,0,0,.2);
-  transition: all .2s ease-in-out;
-  &:hover {
-    transform: scale(1.02);
-    transition: all .2s ease-in-out;
-    cursor: pointer;
-  }
-`;
-
-
-export const VerifyWrapper = styled.div`
-  display: grid; 
-  z-index: 1; 
-  height: 800px; 
-  width: 100%;
-  max-width: 1100px; 
-  margin-right: auto;
-  margin-left: auto; 
-  padding: 0 24px;
-  justify-content: center; 
-`;
-
 export const VerifyRow = styled.div`
   display: grid; 
-  justify-content: flex-start; 
+  justify-content: center;
   grid-auto-columns: minmax(auto, 1lf);
   align-items: center; 
   grid-template-areas: ${({ imgStart }) => imgStart ? `'col2 col1'` : `'col1 col2'`};
@@ -193,16 +80,40 @@ export const VerifyRow = styled.div`
   }
 `;
 
+
 export const Column1 = styled.div`
+  margin-top: 0px;
   margin-bottom: 15px;
+  margin-left: 0px;
+  margin-right: 0px;
   padding: 0 15px;
   grid-area: col1;
+
+  justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    margin: 0px;  
+    margin-top: 10px; 
+  }
 `;
 
 export const Column2 = styled.div`
-  margin-bottom: 15px;
-  margin-left: -100px;
+  margin-bottom:15px;
+  margin-left:0px;
+  margin-right: 0px;
   grid-area: col2;
+
+  @media screen and (max-width: 768px) {
+    margin: 0px;   
+    margin-top: -250px;
+    margin-left: 50px;
+    align-items: center; 
+
+    margin: 0px;
+    margin-top:0px;
+    margin-left:-45px;
+
+  }
 `;
 
 export const TextWrapper = styled.div`
@@ -222,10 +133,20 @@ export const TopLine = styled.div`
   font-weight: 700;
   letter-spacing: 1.4px;
   text-transform: uppercase; 
-  margin-bottom: 16px; 
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  display: grid; 
+  justify-content: center;
+
+  @media screen and (max-width: 768px) {
+    font-size: 16px;
+
+  }
 `;
 
 export const Heading = styled.h1`
+  margin-top: 16px;
   margin-bottom: 24px;
   font-size: 48px;
   line-height: 1.1;
@@ -234,6 +155,7 @@ export const Heading = styled.h1`
 
   @media screen and (max-width: 768px) {
     font-size: 32px; 
+    margin-bottom: 16px;
   }
 `;
 
@@ -245,8 +167,10 @@ export const Subtitle = styled.p`
   color: ${({ darkText }) => darkText ? '#010606' : '#fff'};
 
   @media screen and (max-width: 768px) {
-    align-items: center; 
+    align-content: center; 
     font-size: 16px; 
+    margin-bottom:35px;
+
   }
 `;
 
@@ -266,4 +190,10 @@ export const ImgWrap = styled.div`
 
 export const Img = styled.img`
   width: 100%;
+
+  @media screen and (max-width: 768px) {
+    width: 300px;
+    margin-left:135px;
+    margin-top:50px;
+  }
 `;

@@ -1,92 +1,39 @@
 import React, {useState, useEffect} from "react";
 import { Link } from 'react-router-dom'; 
-
-import { Button, Form } from 'react-bootstrap';
 		
 import { ethers } from "ethers";
 import {
-	Top,
 	InfoContainer, 
 	InfoWrapper, 
-	InfoWrapper1, 
 	InfoRow, 
-	InfoRow1, 
 	Column1,
 	TextWrapper, 
 	TopLine, 
 	Heading, 
-	Heading1, 
 	Subtitle, 
 	BtnWrap,
 	Column2,
-	Column3,
 	ImgWrap,
 	Img, 
 } from './GenerateElements'
-import { Button1,Button2 } from '../ButtonElements';
-import final from "../../images/icon1.png";
+import { Button1, Button3 } from '../ButtonElements';
+import final from "../../images/generate.jpg";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Certify from "../../artifacts/contracts/Certify.sol/Certify.json";
-import Institution from "../../artifacts/contracts/Institution.sol/Institution.json";
-
 import { create } from "ipfs-http-client";
 
+import Institution from "../../artifacts/contracts/Institution.sol/Institution.json";
+
 export default function Generate(props) {
-	
-	const [totalSupply, setTotalSupply] = useState(null);
+
+	const InstitutionAddress = "0xc13FFC9bC07F427c370e4442cE4e8E87BcC38411"
 
 	const [success, setSuccess] = useState(true);
 	const [error, setError] = useState(true);
 	
-	const [event, setEvent] = useState({from: null, to: null, tokenId: null});
 	const [mint, setMint] = useState(false);
 	
-	const CertifyAddress = "0xd022D6eaFad443E6A6f8E31Fa2dfd0F846799E61"
-	const InstitutionAddress = "0xa2d66997aa33FD2D0aA5f65D95160ddf971851a8"
-
-	const DoMint = async (certificateId,
-		certificateURL,
-		candidateName,
-		candidateNumber,
-		courseName,
-		courseId,
-		candidateAddress,
-		expirationDate) =>{
-
-		console.log(props.network);
-
-		if(!props.contract1 || !props.contract2 || props.network!==5) return;
-		try{
-			let t = "QmY5xYxWBQGWbk7RFQWspdmNJ35aHxSQ9qfdmKhPDajAM7";
-			const transaction = await props.contract2.generateCertificate(
-				[['t']],
-				['["1"]'],
-				['["Test"]'],
-				['["1"]'],
-				[CertifyAddress],
-				['["Test"]'],
-				['["1"]'],
-				['["1"]']);
-			await transaction.wait;
-			Institution.on("Transfer", (from, to, tokenId) => {
-				setEvent({from:from,to:to,tokenId:tokenId});
-				setMint("Token Id : "+ parseInt(tokenId)+" succesfully minted to "+to);
-				console.log(event);
-			});
-			notify(transaction.hash);
-			console.log(transaction);
-			setMint(true);
-			}
-		catch (error) {
-			if((error?.data?.message.includes("user rejected transaction") || error?.message.includes("user rejected transaction")))	
-				setError("user rejected transaction");
-				notify("User rejected transaction");
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
 		setTimeout(() => setError(false), 5000);
 		setTimeout(() => setSuccess(false), 5000);
@@ -113,7 +60,6 @@ export default function Generate(props) {
 	// This is an extra precaution since the user shouldn't be able to get to this page without connecting.
 	//if(!props.contract) return (<div className="page error">Contract Not Available</div>);
 
-	
 	const notify = (e) => toast(e, {
 		position: "top-right",
 		className: 'toast-notify',
@@ -124,9 +70,8 @@ export default function Generate(props) {
 		draggable: true,
 		progress: undefined,
 		theme: "dark",
-		});        
+	});        
 
-	
 	const projectId = '2Mt1McsvqeQE9IiUOFYs9fKzib6'; // Replace with your Infura project ID
 	const projectSecret = "979551b73d6cd1d689f34376691eac0e";
 	const authorization = "Basic " + btoa(projectId + ":" + projectSecret);
@@ -139,70 +84,84 @@ export default function Generate(props) {
 	})
 
 	const [file, setFile] = useState(null);
-	const [cid, setCid] = useState(null);
-	const [val, setVal] = useState(null);
 	const [loading, setLoading] = useState(false);
 
+	const [certificateId, setCertificateId] = useState(null);
+	const [candidateName, setCandidateName] = useState('');
+	const [candidateNumber, setCandidateNumber] = useState('');
+	const [candidateAddress, setCandidateAddress] = useState('');
+	const [courseName, setCourseName] = useState('');
+	const [courseId, setCourseId] = useState('');
+	const [expirationDate, setExpirationDate] = useState('');
+	const [aDate, setActualDate] = useState('');
+
+	function date(dateValue) {
+		const unix = new Date(dateValue).getTime() / 1000;
+		setExpirationDate(unix);
+
+		const date = new Date(unix * 1000);
+		const formattedDate = date.toISOString().slice(0, 10);
+
+		setActualDate(formattedDate);
+	}
+
 	const handleFileChange = (event) => {
-		setFile(event.files[0]);
+		if (!event.files[0].type.match('image/png')) {
+			setFile(null);
+			notify('Please upload a PNG file');
+		}
+		else{
+			setFile(event.files[0]);
+		}
 	};
 
 	const another = () => {
 		setFile(null);
-		setCid(null);
 	};
 
 	function view(event, cid) {
 		event.preventDefault();
 		console.log(cid);
 		window.open("https://gateway.pinata.cloud/ipfs/"+cid, "_blank");
-	  };
+	};
 
-	const onSubmitHandler = async (event) => {
+	function etherscan() {
+		// event.preventDefault();
+		console.log(mint);
+		window.open("https://goerli.etherscan.io/tx/"+mint, "_blank");
+	};
+
+	const upload = async (event) => {
 		try{
-			setLoading(true);
 			event.preventDefault();
-			const form = event.target;
+
 			const files = file;
 
 			console.log(files);
 		
 			if (!files || files.length === 0) {
-				setLoading(false);
 
-				return alert("No files selected");
+				notify("No files selected");
 			}
 		
 			// upload files
 			const result = await ipfs.add(files);
-		
-			form.reset();
 
 			console.log(result);
-			setVal("File Uploaded");
-			if(result.path != null) {setLoading(false)};
-			setCid(result.path);
+			setCertificateId(result.path);
+
+			return result.path;
 		}
 		catch(e){
 			setLoading(false);
+			notify(e.reason);
 			console.log(e);
 		}
 	};
 
-	const [ certificateId, setCertificateId ] = useState(null);
-    const [ certificateURL, setCertificateURL] = useState(null);
-    const [ candidateName, setCandidateName ] = useState(null);
-    const [ candidateNumber, setCandidateNumber ] = useState(null);
-    const [ candidateAddress, setCandidateAddress ] = useState(null);
-    const [ courseName, setCourseName ] = useState(null);
-    const [ courseId, setCourseId ] = useState(null);
-    const [ expirationDate, setExpirationDate ] = useState(null);
-        
-
-    const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
         try{
-			if(certificateId && 
-				certificateURL && 
+			if(
 				candidateName && 
 				candidateNumber && 
 				courseName &&
@@ -211,18 +170,19 @@ export default function Generate(props) {
 				expirationDate
 			) 
 			{
-				
-				DoMint(certificateId, 
-					certificateURL,
-					candidateName,
-					candidateNumber,
-					courseName,
-					courseId,
-					candidateAddress,
-					expirationDate);
+				event.preventDefault();
 
-				console.log(certificateId);
-				console.log(certificateURL);
+				setLoading(true);
+
+				let id = await upload(event);
+
+				let val = [[id],[candidateName],[candidateNumber],[candidateAddress],[courseName],[courseId],[expirationDate]]
+
+				console.log(val);
+
+				DoMint(val);
+
+				console.log(id);
 				console.log(candidateName);
 				console.log(candidateNumber);
 				console.log(courseName);
@@ -232,15 +192,55 @@ export default function Generate(props) {
 
 				event.preventDefault();
 			}
-			// else {
-			// 	alert("Fill the form");
-			// }
-            // handle form submission here
+			else {
+				notify("Fill the all the input fields in form");
+			}
         }
         catch {
-
+			notify(error.reason);
         }
     };
+
+	const DoMint = async (val) =>{
+
+		console.log(props.network);
+
+		// if(!props.InstitutionAddress || props.network!==80001) return;
+
+		try{
+			
+			let contract = new ethers.Contract(InstitutionAddress, Institution, props.signer);
+
+			const transaction = await contract.generateCertificate(
+				val[0],
+				val[1],
+				val[2],
+				val[3],
+				val[4],
+				val[5],
+				val[6]
+				);
+			await transaction.wait();
+
+			setMint(transaction.hash);
+
+			setLoading(false);
+			
+			console.log(transaction.hash);
+			}
+		catch (error) {
+			if((error?.data?.message.includes("user rejected transaction") || error?.message.includes("user rejected transaction"))) {
+				setError("user rejected transaction");
+				notify("User rejected transaction");
+			}
+			setLoading(false);
+			notify(error.reason.slice(0, 41));
+			console.log(error);
+		}
+	};
+
+
+	
 	
 	if(!props.address) {
 		return (
@@ -274,30 +274,48 @@ export default function Generate(props) {
 		);
 	}
 	if(mint) {
+		
 		return (
 			<>
-			<InfoContainer id="generate" >
+			<InfoContainer id="generate">
+				{notify("Transaction Hash: "+mint)}
+			
 				<InfoWrapper>
 				<InfoRow >
-					<Column1>
+					<Column1 >
+					<ToastContainer
+						position="top-right"
+						autoClose={10000}
+						hideProgressBar={false}
+						newestOnTop={true}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="black"
+					/>
 					<TextWrapper>
-						{event.tokenId!==0 ? (<><Subtitle darkText={true}>Certificate ID : {parseInt(event.tokenId)} Minted successfully</Subtitle> </>) : (false)}
+						
+						<Subtitle darkText={true}>Certificate Minted successfully</Subtitle>
+						<Subtitle darkText={true}>Transaction Hash: </Subtitle>
+						<Subtitle darkText={true}>Verify on etherscan:</Subtitle>
+						<a href="#" onClick={() => {etherscan();}}>
+							<Subtitle darkText={true}>{mint}</Subtitle>
+						</a>
 						<Subtitle darkText={true}>View the minted certificate</Subtitle>
+						<a href="#" onClick={(event) => {view(event, certificateId);}}>
+							<Subtitle darkText={true}>{certificateId}</Subtitle>
+						</a>
+						
 						<BtnWrap>
-						<ToastContainer
-							position="top-right"
-							autoClose={10000}
-							hideProgressBar={false}
-							newestOnTop={true}
-							closeOnClick
-							rtl={false}
-							pauseOnFocusLoss
-							draggable
-							pauseOnHover
-							theme="black"
-						/>
 						<Button1 to="/verify" onClick={toggleHome}> Verify Certificate </Button1>
-					</BtnWrap>
+						</BtnWrap>
+
+						<br></br>
+						
+						<Button3 onClick={another}> Mint another Certificate</Button3>
+
 					</TextWrapper>
 					</Column1>
 					<Column2>
@@ -315,104 +333,94 @@ export default function Generate(props) {
 	else {
 		return (
 		<>
-		<InfoContainer id="generate" primary={true}>
-			<Top primary={true}>
-			<TopLine primary={true}>Move to decentralization</TopLine>
-			<Heading primary={true} lightText={false}>Welcome to Certify!</Heading>
-			<Subtitle primary={true} darkText={true}>
-			Fill and Submit the below form:
-			<br></br>
-			</Subtitle>	
-			</Top>
+		<InfoContainer id="generate" >
+			<InfoWrapper>
+			<InfoRow >
+				<Column1>
+				<TextWrapper>
+					<TopLine>Move to decentralization</TopLine>
+					<Heading lightText={false}>Welcome to Certify!</Heading>
+					<TopLine>Upload file to IPFS</TopLine>
 
-	 		<InfoWrapper primary={true}>
+					{loading ? <><div className="loader" /></> : <></>}
 
-			<InfoRow primary={true}>
-				
-			<Column1 primary={true}>
+					<ToastContainer
+						position="top-right"
+						autoClose={10000}
+						hideProgressBar={false}
+						newestOnTop={true}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="black"
+					/>
 
+				</TextWrapper>
 
-			<label htmlFor="name" id="label"> certificateId: </label>
-			<input type="text" className="hidden" required onChange={(event) => setCertificateId(`["${event.target.value}"]`)} placeholder="certificate id" />
-
-			<label htmlFor="name" id="label"> candidateName </label>
-			<input type="text" className="hidden" onChange={(event) => setCandidateName(`["${event.target.value}"]`)} placeholder="candidate name" />
-
-			<label htmlFor="name" id="label"> courseName </label>
-			<input type="text" className="hidden" onChange={(event) => setCourseName(`["${event.target.value}"]`)} placeholder="course name" />
-
-			<label htmlFor="name" id="label"> candidateAddress </label>
-			<input type="text" className="hidden" onChange={(event) => setCandidateAddress(`["${event.target.value}"]`)} placeholder="wallet address" />
-
-			</Column1>
-			<Column2 primary={true}>
-
-			<label htmlFor="name" id="label"> certificateCID </label>
-			<input type="text" className="hidden" onChange={(event) => setCertificateURL(`["${event.target.value}"]`)} placeholder="certificate cid" />
-
-			<label htmlFor="name" id="label"> candidateNumber </label>
-			<input type="text" className="hidden" onChange={(event) => setCandidateNumber(`["${event.target.value}"]`)} placeholder="candidate rollno" />
-
-			<label htmlFor="name" id="label"> courseId </label>
-			<input type="text" className="hidden" onChange={(event) => setCourseId(`[${event.target.value}]`)} placeholder="course id" />
-
-			<label htmlFor="name" id="label"> expirationDate </label>
-			<input type="date" className="hidden" onChange={(event) => setExpirationDate([1])} placeholder="expiration date" />
-			
-			
-			</Column2>
-
-			<Column3 >
-			{ipfs && (
+				{ipfs && (
 				<>
-				<div className="custom-file-input">
-				
-				{loading ? <><div className="loader" /></> :
+
+				{<> </>}:
 
 				<>
-				<Form onSubmit={onSubmitHandler}>
 
-				{cid == null ? 
-				(
-					file ? 
+				{file ?
 					(
 						<>
-						<TopLine>Upload file to IPFS</TopLine>
-						<Subtitle primary={true} darkText={true}>Selected file</Subtitle>
-						<Subtitle primary={true} darkText={true}>"{file.name.slice(0, 20)}"</Subtitle>
-						<Button type="submit">Upload file</Button>
+							<Subtitle darkText={true}>Selected file: "{file.name.slice(0, 20)}"</Subtitle>
 						</>
-					) : 
+					) :
 					(
 						<>
-						<TopLine>Upload file to IPFS</TopLine>
-						<label htmlFor="file-input" className="btn"> Choose file </label>
-						<input type="file" id="file-input" className="hidden" onChange={(event) => {handleFileChange(event.target);}} />
+						<form className="form">
+						<div className="form-column">
+							<input type="file" id="file-input" onChange={(event) => { handleFileChange(event.target); } } />
+						</div>
+						</form>
 						</>
 					)
-				) : 
-				(
-					<> 
-					<TopLine>{val}</TopLine>
-					<Subtitle darkText={true}> IPFS CID: <a href="#" onClick={(event) => view(event,cid)}> {cid} </a> </Subtitle>
-					<Button onClick={() => another()}>Upload another certificate</Button>
-					</> 
-				)
 				}
-			
-				</Form> </>}
-				</div>
+
+				<>
+					<form className="form">
+						<div className="form-column">
+							<label htmlFor="field1">Candidate Number</label>
+							<input type="text" id="field1" value={candidateNumber} onChange={e => setCandidateNumber(e.target.value)} />
+							<label htmlFor="field2">Course Id</label>
+							<input type="text" id="field2" value={courseId} onChange={e => setCourseId(e.target.value)} />
+							<label htmlFor="field3">Candidate Address</label>
+							<input type="text" id="field3" value={candidateAddress} onChange={e => setCandidateAddress(e.target.value)} />
+						</div>
+						<div className="form-column">
+							<label htmlFor="field4">Candidate Name</label>
+							<input type="text" id="field4" value={candidateName} onChange={e => setCandidateName(e.target.value)} />
+							<label htmlFor="field5">Course Name</label>
+							<input type="text" id="field5" value={courseName} onChange={e => setCourseName(e.target.value)} />
+							<label htmlFor="field6">Expiration Date</label>
+							<input type="date" id="field6" value={aDate} onChange={e => date(e.target.value)} />
+						</div>
+						<br></br>
+
+					</form>
+					<div className="button" onClick={(event) => { handleSubmit(event); } }> Mint </div>
+				</>
+				</>
 				</>
 			)}
+				</Column1>
 
-			
-			<br></br>
-			<div className="button" onClick={(event) => {handleSubmit(event)}}> Mint </div>
-			
-			</Column3>
+				<Column2>
+				<ImgWrap>
+					<Img src={final} alt="nfts"/>
+				</ImgWrap>
+				</Column2>
+				
 			</InfoRow>
 			</InfoWrapper>
-			</InfoContainer>
+		</InfoContainer>
+
 		</>
 		);
 	}

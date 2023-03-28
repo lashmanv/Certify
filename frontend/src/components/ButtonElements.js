@@ -67,3 +67,24 @@ export const Button2 = styled(Link)`
   }
 
 `;
+
+export const Button3 = styled.div`
+  border-radius: 50px;
+  background: #00A300;
+  padding: 12px 30px;
+  font-size: 16px;
+  color: black;
+  cursor: pointer; 
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+
+  &:hover {
+    background: #010606;
+    color: white};
+  }
+
+  @media screen and (max-width: 768px) {
+    margin-left: 0px;
+  }
+`;
