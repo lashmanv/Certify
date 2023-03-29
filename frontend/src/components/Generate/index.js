@@ -239,7 +239,6 @@ export default function Generate(props) {
 		}
 	};
 
-
 	
 	
 	if(!props.address) {
